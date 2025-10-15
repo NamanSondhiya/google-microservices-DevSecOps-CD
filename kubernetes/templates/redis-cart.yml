@@ -1,0 +1,60 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: redis-cart-deploy
+    namespace: {{ .Values.namespace }}
+    labels:
+      app: redis-cart
+spec:
+    replicas: {{ .Values.redisCart.replicasCount }}
+    strategy:
+        type: {{ .Values.strategy.type }}
+    selector:
+        matchLabels:
+            app: redis-cart
+    template:
+        metadata:
+            labels:
+                app: redis-cart
+        spec:
+            containers:
+                - name: redis-cart
+                  image: "redis:{{ .Values.redisCart.imagetag }}"
+                  env:
+                  - name: DISABLE_TRACING
+                    value: "true"
+                  - name: DISABLE_PROFILER
+                    value: "true"
+                  ports:
+                    - containerPort: 6379
+            resources:
+                limits:
+                    memory: "256Mi"
+                    cpu: "150m"
+                requests:
+                    memory: "128Mi"
+                    cpu: "50m"
+---
+kind: Service
+apiVersion: v1
+metadata:
+    name: redis-cart-svc
+    namespace: {{ .Values.namespace }}
+    labels:
+       app: redis-cart
+spec:
+    ports:
+        - port: 6379
+          targetPort: 6379
+          protocol: TCP
+    type: {{ .Values.redisCart.servicetype }}
+    selector:
+        app: redis-cart
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+    name: rediscart-sa
+    namespace: {{ .Values.namespace }}
+    labels:
+      app: redis-cart

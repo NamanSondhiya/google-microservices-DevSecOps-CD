@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bootique-cart
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/NamanSondhiya/google-microservices-DevSecOps-CD.git
+    path: kubernetes/
+    targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: application
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  syncOptions:
+    - Create-namespace=true

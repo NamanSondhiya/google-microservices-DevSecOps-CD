@@ -1,0 +1,58 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: loadgenerator-deploy
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: loadgenerator
+spec:
+  replicas: {{ .Values.loadgenerator.replicasCount }}
+  selector:
+    matchLabels:
+      app: loadgenerator
+  template:
+    metadata:
+      labels:
+        app: loadgenerator
+    spec:
+      containers:
+        - name: loadgenerator
+          image: namanss/loadgenerator:{{ .Values.loadgenerator.imagetag }}
+          env:
+            - name: FRONTEND_ADDR
+              value: frontend-svc.{{ .Values.namespace }}.svc.cluster.local:8080
+            - name: USERS
+              value: "10"
+            - name: RATE
+              value: "1"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "300m"
+            limits:
+              memory: "5120Mi"
+              cpu: "500m"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: loadgenerator-svc
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: loadgenerator
+spec:
+  selector:
+    app: loadgenerator
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: {{ .Values.loadgenerator.servicetype }}
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: loadgenerator-sa
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: loadgenerator 

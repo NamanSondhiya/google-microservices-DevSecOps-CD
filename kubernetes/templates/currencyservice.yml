@@ -1,0 +1,64 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: currencyservice-deploy
+    namespace: {{ .Values.namespace }}
+    labels:
+       app: currencyservice
+spec:
+    strategy:
+        type: {{ .Values.strategy.type }}
+    replicas: {{ .Values.currencyservice.replicasCount }}
+    selector:
+        matchLabels:
+            app: currencyservice
+    template:
+        metadata:
+            labels:
+                app: currencyservice
+        spec:
+            containers:
+                - name: currencyservice
+                  image: docker.io/namanss/currencyservice:{{ .Values.currencyservice.imagetag }}
+                  ports:
+                     - containerPort: 7000
+                  env:
+                    - name: PORT
+                      value: "7000"
+                    - name: GOOGLE_CLOUD_PROJECT
+                      value: "demo-project-113445"
+                    - name: DISABLE_TRACING
+                      value: "true"
+                    - name: DISABLE_PROFILER
+                      value: "true"
+                  resources:
+                      requests:
+                          memory: "100Mi"
+                          cpu: "100m"
+                      limits:
+                          memory: "128Mi"
+                          cpu: "200m"
+---
+kind: Service
+apiVersion: v1
+metadata:
+    name: currencyservice-svc
+    namespace: {{ .Values.namespace }}
+    labels:
+        app: currencyservice
+spec:
+    selector:
+        app: currencyservice
+    ports:
+        - protocol: TCP
+          port: 7000
+          targetPort: 7000
+    type: {{ .Values.currencyservice.servicetype }}
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+    name: currencyservice-sa
+    namespace: {{ .Values.namespace }}
+    labels:
+        app: currencyservice

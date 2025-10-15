@@ -1,0 +1,62 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: adservice-deploy
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: adservice
+spec:
+  strategy:
+        type: {{ .Values.strategy.type }}
+  replicas: {{ .Values.replicasCount }}
+  selector:
+    matchLabels:
+      app: adservice
+  template:
+    metadata:
+      labels:
+        app: adservice
+    spec:
+      containers:
+        - name: adservice
+          image: docker.io/namanss/adservice:{{ .Values.adservice.imagetag }}
+          ports:
+            - containerPort: 9555
+          env:
+            - name: PORT
+              value: "9555"
+            - name: DISABLE_TRACING
+              value: "true"
+            - name: DISABLE_TRACKING
+              value: "true"
+          resources:
+            requests:
+              memory: "200Mi"
+              cpu: "200m"
+            limits:
+              memory: "300Mi"
+              cpu: "300m"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: adservice-svc
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: adservice
+spec:
+  selector:
+    app: adservice
+  ports:
+    - protocol: TCP
+      port: 9555
+      targetPort: 9555
+  type: {{ .Values.adservice.servicetype }}
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: adservice-sa
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: adservice

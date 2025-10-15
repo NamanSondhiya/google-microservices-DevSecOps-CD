@@ -1,0 +1,64 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: recommendationservice-deploy
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: recommendationservice
+spec:
+  replicas: {{ .Values.recommendationservice.replicasCount }}
+  strategy:
+        type: {{ .Values.strategy.type }}
+  selector:
+    matchLabels:
+      app: recommendationservice
+  template:
+    metadata:
+      labels:
+        app: recommendationservice
+    spec:
+      containers:
+        - name: recommendationservice
+          image: namanss/recommendationservice:{{ .Values.recommendationservice.imagetag }}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: PRODUCT_CATALOG_SERVICE_ADDR
+              value: productcatalogservice.{{ .Values.namespace }}.svc.cluster.local:3550
+            - name: DISABLE_TRACING
+              value: "true"
+            - name: DISABLE_PROFILER
+              value: "true"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "200m"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: recommendationservice-svc
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: recommendationservice
+spec:
+  selector:
+    app: recommendationservice
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: {{ .Values.recommendationservice.servicetype }}
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: recommendationservice-sa
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: recommendationservice

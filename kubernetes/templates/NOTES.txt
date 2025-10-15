@@ -1,0 +1,1 @@
+Successfully Installed {{ .Chart.Name }}!
