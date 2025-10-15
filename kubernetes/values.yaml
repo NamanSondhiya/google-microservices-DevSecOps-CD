@@ -63,5 +63,5 @@ frontend:
 
 loadgenerator:
   replicasCount: 1
-  imagetag: 5-
+  imagetag: 5
   servicetype: ClusterIP

@@ -1,0 +1,102 @@
+library('jenkins-shared') _
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'IMAGE_TAG_AD', defaultValue: '', description: 'adservice Docker image tag after CI build')
+        string(name: 'IMAGE_TAG_CART', defaultValue: '', description: 'cartservice Docker image tag after CI build')
+        string(name: 'IMAGE_TAG_CHECK', defaultValue: '', description: 'checkoutservice Docker image tag after CI build')
+        string(name: 'IMAGE_TAG_CURR', defaultValue: '', description: 'currencyservice Docker image tag after CI build')
+        string(name: 'IMAGE_TAG_MAIL', defaultValue: '', description: 'emailservice Docker image tag after CI build')
+        string(name: 'IMAGE_TAG_FRONT', defaultValue: '', description: 'frontend Docker image tag after CI build')
+        string(name: 'IMAGE_TAG_LOADG', defaultValue: '', description: 'loadgenerator Docker image tag after CI build')
+        string(name: 'IMAGE_TAG_PAY', defaultValue: '', description: 'paymentservice Docker image tag after CI build')
+        string(name: 'IMAGE_TAG_PROD_CAT', defaultValue: '', description: 'productcatalogservice Docker image tag after CI build')
+        string(name: 'IMAGE_TAG_RECC', defaultValue: '', description: 'recommendationservice Docker image tag after CI build')
+        string(name: 'IMAGE_TAG_SHIP', defaultValue: '', description: 'shippingservice Docker image tag after CI build')
+        string(name: 'IMAGE_TAG_REDIS', defaultValue: '', description: 'redisCart Docker image tag after CI build')
+    }
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                script {
+                    clean_ws()
+                }
+            }
+        }
+
+        stage('Clone CD Repo') {
+            steps {
+                script {
+                    git_clone("https://github.com/NamanSondhiya/google-microservices-DevSecOps-CD", "main")
+                } 
+            }
+        }
+
+        stage('Verify Docker Tags') {
+            steps {
+                script {
+                    echo "AD: ${params.IMAGE_TAG_AD}"
+                    echo "CART: ${params.IMAGE_TAG_CART}"
+                    echo "CHECKOUT: ${params.IMAGE_TAG_CHECK}"
+                    echo "CURRENCY: ${params.IMAGE_TAG_CURR}"
+                    echo "EMAIL: ${params.IMAGE_TAG_MAIL}"
+                    echo "FRONTEND: ${params.IMAGE_TAG_FRONT}"
+                    echo "LOADGEN: ${params.IMAGE_TAG_LOADG}"
+                    echo "PAYMENT: ${params.IMAGE_TAG_PAY}"
+                    echo "PRODUCTCAT: ${params.IMAGE_TAG_PROD_CAT}"
+                    echo "RECOMMENDATION: ${params.IMAGE_TAG_RECC}"
+                    echo "SHIPPING: ${params.IMAGE_TAG_SHIP}"
+                    echo "REDIS: ${params.IMAGE_TAG_REDIS}"
+                }
+            }
+        }
+
+        stage('Update K8s Chart values.yaml') {
+            steps {
+                script {
+                    def images = [
+                        frontend: params.IMAGE_TAG_FRONT,
+                        adservice: params.IMAGE_TAG_AD,
+                        cartservice: params.IMAGE_TAG_CART,
+                        checkoutservice: params.IMAGE_TAG_CHECK,
+                        currencyservice: params.IMAGE_TAG_CURR,
+                        emailservice: params.IMAGE_TAG_MAIL,
+                        loadgenerator: params.IMAGE_TAG_LOADG,
+                        paymentservice: params.IMAGE_TAG_PAY,
+                        productcatalogservice: params.IMAGE_TAG_PROD_CAT,
+                        recommendationservice: params.IMAGE_TAG_RECC,
+                        shippingservice: params.IMAGE_TAG_SHIP,
+                        redisCart: params.IMAGE_TAG_REDIS
+                    ]
+
+                    images.each { svc, tag ->
+                        if (tag?.trim()) {
+                            sh """
+                            sed -i "s|imagetag: .*|imagetag: ${tag}|" kubernetes/values.yaml
+                            """
+                            echo "Updated ${svc} imagetag to ${tag}"
+                        } else {
+                            echo "Skipping ${svc} because tag is empty"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Commit & Push') {
+            steps {
+                script {
+                    sh """
+                    git config --global user.email "jenkins@yourdomain.com"
+                    git config --global user.name "jenkins"
+                    git add kubernetes/values.yaml
+                    git commit -m "Update image tags via Jenkins build ${BUILD_NUMBER}" || echo "No changes to commit"
+                    git push origin main
+                    """
+                }
+            }
+        }
+    }
+}
