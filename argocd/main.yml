@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: bootique-cart
+  name: google-microservices-stack
   namespace: argocd
 spec:
   project: default
@@ -16,5 +16,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
-  syncOptions:
-    - Create-namespace=true
+    syncOptions:
+      - Create-namespace=true
