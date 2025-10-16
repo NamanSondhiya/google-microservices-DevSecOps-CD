@@ -10,7 +10,7 @@ redisCart:
 
 adservice:
   replicasCount: 1
-  imagetag: 11
+  imagetag: 1.9
   servicetype: ClusterIP
 
 cartservice:
