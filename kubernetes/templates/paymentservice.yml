@@ -13,6 +13,7 @@ spec:
     matchLabels:
       app: paymentservice
   template:
+    serviceAccountName: paymentservice-sa
     metadata:
       labels:
         app: paymentservice

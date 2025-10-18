@@ -17,6 +17,7 @@ spec:
       labels:
         app: adservice
     spec:
+      serviceAccountName: adservice-sa
       containers:
         - name: adservice
           image: docker.io/namanss/adservice:{{ .Values.adservice.imagetag }}

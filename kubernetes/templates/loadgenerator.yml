@@ -11,6 +11,7 @@ spec:
     matchLabels:
       app: loadgenerator
   template:
+    serviceAccountName: loadgenerator-sa
     metadata:
       labels:
         app: loadgenerator

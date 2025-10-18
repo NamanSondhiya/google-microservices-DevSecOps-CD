@@ -17,6 +17,7 @@ spec:
             labels:
                 app: currencyservice
         spec:
+            serviceAccountName: currencyservice-sa
             containers:
                 - name: currencyservice
                   image: docker.io/namanss/currencyservice:{{ .Values.currencyservice.imagetag }}

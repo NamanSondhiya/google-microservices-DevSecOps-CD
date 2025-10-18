@@ -17,6 +17,7 @@ spec:
             labels:
                 app: redis-cart
         spec:
+            serviceAccountName: rediscart-sa
             containers:
                 - name: redis-cart
                   image: "redis:{{ .Values.redisCart.imagetag }}"

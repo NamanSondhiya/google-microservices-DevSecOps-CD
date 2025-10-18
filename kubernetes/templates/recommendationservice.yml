@@ -17,6 +17,7 @@ spec:
       labels:
         app: recommendationservice
     spec:
+      serviceAccountName: recommendationservice-sa
       containers:
         - name: recommendationservice
           image: namanss/recommendationservice:{{ .Values.recommendationservice.imagetag }}

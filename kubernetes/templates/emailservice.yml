@@ -10,32 +10,33 @@ spec:
         type: {{ .Values.strategy.type }}
     replicas: {{ .Values.emailservice.replicasCount }}
     selector: 
-        matchLabels:
-            app: emailservice
+      matchLabels:
+        app: emailservice
     template:
         metadata:
-            labels:
-                app: emailservice
+          labels:
+            app: emailservice
         spec:
-            containers:
-            - name: emailservice
-              image: namanss/emailservice:{{ .Values.emailservice.imagetag }}
-              ports:
-                - containerPort: 8080
-              env:
-                - name: PORT
-                  value: "8080"
-                - name: DISABLE_TRACING
-                  value: "true"
-                - name: DISABLE_PROFILER
-                  value: "true"
-              resources:
-                requests:
-                  memory: "128Mi"
-                  cpu: "100m"
-                limits:
-                  memory: "200Mi"
-                  cpu: "200m"
+          serviceAccountName: emailservice-sa
+          containers:
+          - name: emailservice
+            image: namanss/emailservice:{{ .Values.emailservice.imagetag }}
+            ports:
+              - containerPort: 8080
+            env:
+              - name: PORT
+                value: "8080"
+              - name: DISABLE_TRACING
+                value: "true"
+              - name: DISABLE_PROFILER
+                value: "true"
+            resources:
+              requests:
+                memory: "128Mi"
+                cpu: "100m"
+              limits:
+                memory: "200Mi"
+                cpu: "200m"
 ---
 kind: Service
 apiVersion: v1

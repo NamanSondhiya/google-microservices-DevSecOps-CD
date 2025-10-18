@@ -17,6 +17,7 @@ spec:
       labels:
         app: shippingservice
     spec:
+      serviceAccountName: shippingservice-sa
       containers:
         - name: shippingservice
           image: namanss/shippingservice:{{ .Values.shippingservice.imagetag }}
