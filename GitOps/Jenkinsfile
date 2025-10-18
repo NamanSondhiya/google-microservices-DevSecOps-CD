@@ -1,4 +1,11 @@
 library('jenkins-shared') _
+
+def COLOR_MAP = [
+    FAILURE: 'danger',
+    SUCCESS: 'good',
+    UNSTABLE: 'warning'
+]
+
 pipeline {
     agent any
 
@@ -93,6 +100,20 @@ pipeline {
                     git push origin main
                     """
                 }
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Slack Notification.'
+            script {
+                def buildStatus = currentBuild.currentResult
+                def colorCode = buildStatus == 'SUCCESS' ? '#00FF00' : '#FF0000'
+                slackSend(
+                    channel: '#jenkins-ci',
+                    message: "Build *${env.JOB_NAME}* #${env.BUILD_NUMBER} finished with status: *${buildStatus}*\n${env.BUILD_URL}",
+                    color: colorCode
+                )            
             }
         }
     }
