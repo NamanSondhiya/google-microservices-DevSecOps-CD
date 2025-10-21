@@ -58,6 +58,15 @@ pipeline {
             }
         }
 
+        stage('Installing yq') {
+            steps {
+                sh '''
+                sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq 
+                sudo chmod +x /usr/local/bin/yq
+                '''
+            }
+        }
+        
         stage('Update K8s Chart values.yaml') {
             steps {
                 script {
@@ -77,10 +86,11 @@ pipeline {
 
                     images.each { svc, tag ->
                         if (tag?.trim()) {
+                            echo "Updating ${svc} imagetag to ${tag}"
                             sh """
-                            sed -i "s|imagetag: .*|imagetag: ${tag}|" kubernetes/values.yaml
+                            yq e -i '.${svc}.imagetag = "${tag}"' kubernetes/values.yaml
                             """
-                            echo "Updated ${svc} imagetag to ${tag}"
+                            sh "yq e '.${svc}' kubernetes/values.yaml"
                         } else {
                             echo "Skipping ${svc} because tag is empty"
                         }
