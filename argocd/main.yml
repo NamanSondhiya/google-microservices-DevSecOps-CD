@@ -4,7 +4,7 @@ metadata:
   name: google-microservices-stack
   namespace: argocd
 spec:
-  project: online-app
+  project: default
   source:
     repoURL: https://github.com/NamanSondhiya/google-microservices-DevSecOps-CD.git
     path: kubernetes/

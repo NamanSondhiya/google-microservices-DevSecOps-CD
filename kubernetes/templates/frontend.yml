@@ -27,6 +27,8 @@ spec:
           env:
           - name: PORT
             value: "8080"
+          - name: ENV_PLATFORM
+            value: "AWS"
           - name: PRODUCT_CATALOG_SERVICE_ADDR
             value: productcatalogservice-svc.{{ .Values.namespace }}.svc.cluster.local:3550
           - name: CURRENCY_SERVICE_ADDR
