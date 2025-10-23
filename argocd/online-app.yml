@@ -11,4 +11,4 @@ spec:
     -  server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: ''
-      kind: Namespace #for principle of least privilage replace it with the application namespace
+      kind: application #for principle of least privilage replace it with the application namespace
