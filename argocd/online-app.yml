@@ -7,6 +7,6 @@ spec:
   description: Project space for Online Web-Store Application
   sourceRepos:
     - '*'
-  destinatoins:
+  destinations:
     - namespace: application
       server: https://kubernetes.default.svc
