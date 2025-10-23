@@ -1,0 +1,9 @@
+kind: AppProject
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: online-app
+  namespace: argocd
+spec:
+  description: Project space for Online Web-Store Application
+  sourceRepos:
+    - '*'
