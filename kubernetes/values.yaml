@@ -39,7 +39,7 @@ recommendationservice:
   servicetype: ClusterIP
 checkoutservice:
   replicasCount: 1
-  imagetag: 3
+  imagetag: "1.1"
   servicetype: ClusterIP
   redis: true
 frontend:
