@@ -31,7 +31,7 @@ productcatalogservice:
   servicetype: ClusterIP
 shippingservice:
   replicasCount: 1
-  imagetag: 1
+  imagetag: "4.3"
   servicetype: ClusterIP
 recommendationservice:
   replicasCount: 1
