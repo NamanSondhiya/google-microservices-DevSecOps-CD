@@ -19,7 +19,7 @@ currencyservice:
   servicetype: ClusterIP
 emailservice:
   replicasCount: 1
-  imagetag: 2
+  imagetag: "4.4"
   servicetype: ClusterIP
 paymentservice:
   replicasCount: 1
