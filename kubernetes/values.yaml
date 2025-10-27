@@ -27,7 +27,7 @@ paymentservice:
   servicetype: ClusterIP
 productcatalogservice:
   replicasCount: 1
-  imagetag: 1
+  imagetag: "4.4"
   servicetype: ClusterIP
 shippingservice:
   replicasCount: 1
