@@ -13,7 +13,6 @@ spec:
     matchLabels:
       app: frontend
   template:
-    serviceAccountName: frontend-sa
     metadata:
       labels:
         app: frontend
@@ -76,6 +75,3 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: frontend-sa
-  namespace: {{ .Values.namespace }}
-  labels:
-    app: frontend

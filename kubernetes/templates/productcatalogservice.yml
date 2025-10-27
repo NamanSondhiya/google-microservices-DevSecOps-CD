@@ -13,11 +13,11 @@ spec:
     matchLabels:
       app: productcatalogservice
   template:
-    serviceAccountName: productcatalogservice-sa
     metadata:
       labels:
         app: productcatalogservice
     spec:
+      serviceAccountName: productcatalogservice-sa
       containers:
         - name: productcatalogservice
           image: namanss/productcatalogservice:{{ .Values.productcatalogservice.imagetag }}

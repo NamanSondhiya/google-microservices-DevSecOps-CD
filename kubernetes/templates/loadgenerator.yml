@@ -11,11 +11,11 @@ spec:
     matchLabels:
       app: loadgenerator
   template:
-    serviceAccountName: loadgenerator-sa
     metadata:
       labels:
         app: loadgenerator
     spec:
+      serviceAccountName: loadgenerator-sa
       containers:
         - name: loadgenerator
           image: namanss/loadgenerator:{{ .Values.loadgenerator.imagetag }}

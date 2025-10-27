@@ -58,6 +58,3 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: adservice-sa
-  namespace: {{ .Values.namespace }}
-  labels:
-    app: adservice
