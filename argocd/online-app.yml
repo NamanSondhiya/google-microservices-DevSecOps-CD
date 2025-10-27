@@ -8,8 +8,8 @@ spec:
   sourceRepos:
     - '*'
   destinations:
-    - namespace: application # match it with the namespace in the main.yml
+    - namespace: application #match the namespace in the main.yml
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: ''
-      kind: application #for principle of least privilage replace it with the application namespace
+      kind: '*' #for principle of least privilage replace it with the application namespace
