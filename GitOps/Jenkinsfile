@@ -17,7 +17,7 @@ pipeline {
         string(name: 'IMAGE_TAG_MAIL', defaultValue: '', description: 'emailservice Docker image tag after CI build')
         string(name: 'IMAGE_TAG_FRONT', defaultValue: '', description: 'frontend Docker image tag after CI build')
         string(name: 'IMAGE_TAG_PAY', defaultValue: '', description: 'paymentservice Docker image tag after CI build')
-        string(name: 'IMAGE_TAG_PROD_CAT', defaultValue: '', description: 'productcatalogservice Docker image tag after CI build')
+        string(name: 'IMAGE_TAG_PROD_CART', defaultValue: '', description: 'productcatalogservice Docker image tag after CI build')
         string(name: 'IMAGE_TAG_RECC', defaultValue: '', description: 'recommendationservice Docker image tag after CI build')
         string(name: 'IMAGE_TAG_SHIP', defaultValue: '', description: 'shippingservice Docker image tag after CI build')
         string(name: 'IMAGE_TAG_REDIS', defaultValue: '', description: 'redisCart Docker image tag after CI build')
@@ -50,7 +50,7 @@ pipeline {
                     echo "EMAIL: ${params.IMAGE_TAG_MAIL}"
                     echo "FRONTEND: ${params.IMAGE_TAG_FRONT}"
                     echo "PAYMENT: ${params.IMAGE_TAG_PAY}"
-                    echo "PRODUCTCAT: ${params.IMAGE_TAG_PROD_CAT}"
+                    echo "PRODUCTCAT: ${params.IMAGE_TAG_PROD_CART}"
                     echo "RECOMMENDATION: ${params.IMAGE_TAG_RECC}"
                     echo "SHIPPING: ${params.IMAGE_TAG_SHIP}"
                     echo "REDIS: ${params.IMAGE_TAG_REDIS}"
@@ -69,7 +69,7 @@ pipeline {
                         currencyservice: params.IMAGE_TAG_CURR,
                         emailservice: params.IMAGE_TAG_MAIL,
                         paymentservice: params.IMAGE_TAG_PAY,
-                        productcatalogservice: params.IMAGE_TAG_PROD_CAT,
+                        productcatalogservice: params.IMAGE_TAG_PROD_CART,
                         recommendationservice: params.IMAGE_TAG_RECC,
                         shippingservice: params.IMAGE_TAG_SHIP,
                         redisCart: params.IMAGE_TAG_REDIS
