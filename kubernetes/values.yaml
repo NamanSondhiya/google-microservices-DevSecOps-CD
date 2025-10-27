@@ -35,7 +35,7 @@ shippingservice:
   servicetype: ClusterIP
 recommendationservice:
   replicasCount: 1
-  imagetag: 1
+  imagetag: "4.3"
   servicetype: ClusterIP
 checkoutservice:
   replicasCount: 1
