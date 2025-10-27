@@ -13,11 +13,11 @@ spec:
     matchLabels:
       app: paymentservice
   template:
-    serviceAccountName: paymentservice-sa
     metadata:
       labels:
         app: paymentservice
     spec:
+      serviceAccountName: paymentservice-sa
       containers:
         - name: paymentservice
           image: namanss/paymentservice:{{ .Values.paymentservice.imagetag }}
