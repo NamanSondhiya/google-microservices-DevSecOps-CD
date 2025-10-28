@@ -41,16 +41,6 @@ spec:
               requests:
                 memory: "128Mi"
                 cpu: "50m"
-            readinessProbe:
-              initialDelaySeconds: 15
-              periodSeconds: 20
-              grpc:
-                port: 6379
-            livenessProbe:
-              initialDelaySeconds: 15
-              periodSeconds: 20
-              grpc:
-                port: 6379
 ---
 kind: Service
 apiVersion: v1
