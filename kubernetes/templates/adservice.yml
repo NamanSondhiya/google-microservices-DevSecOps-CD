@@ -37,6 +37,16 @@ spec:
             limits:
               memory: "300Mi"
               cpu: "300m"
+          readinessProbe:
+            grpc:
+              port: 9555
+              service: adservice
+            initialDelaySeconds: 25
+          livenessProbe:
+            grpc:
+              port: 9555
+              service: adservice
+            initialDelaySeconds: 25
 ---
 kind: Service
 apiVersion: v1
