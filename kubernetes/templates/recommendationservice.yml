@@ -18,6 +18,12 @@ spec:
         app: recommendationservice
     spec:
       serviceAccountName: recommendationservice-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      terminationGracePeriodSeconds: 5
       containers:
         - name: recommendationservice
           image: namanss/recommendationservice:{{ .Values.recommendationservice.imagetag }}

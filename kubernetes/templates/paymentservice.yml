@@ -18,6 +18,12 @@ spec:
         app: paymentservice
     spec:
       serviceAccountName: paymentservice-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      terminationGracePeriodSeconds: 5 
       containers:
         - name: paymentservice
           image: namanss/paymentservice:{{ .Values.paymentservice.imagetag }}
