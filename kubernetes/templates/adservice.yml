@@ -43,16 +43,16 @@ spec:
             limits:
               memory: "300Mi"
               cpu: "300m"
-          # readinessProbe:
-          #   grpc:
-          #     port: 9555
-          #     service: adservice
-          #   initialDelaySeconds: 25
-          # livenessProbe:
-          #   grpc:
-          #     port: 9555
-          #     service: adservice
-          #   initialDelaySeconds: 25
+          readinessProbe:
+            grpc:
+              port: 9555
+              service: adservice
+            initialDelaySeconds: 25
+          livenessProbe:
+            grpc:
+              port: 9555
+              service: adservice
+            initialDelaySeconds: 25
 ---
 kind: Service
 apiVersion: v1
@@ -65,7 +65,8 @@ spec:
   selector:
     app: adservice
   ports:
-    - protocol: TCP
+    - name: grpc
+      protocol: TCP
       port: 9555
       targetPort: 9555
   type: {{ .Values.adservice.servicetype }}
