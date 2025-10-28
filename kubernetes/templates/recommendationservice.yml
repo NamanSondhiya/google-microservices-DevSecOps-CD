@@ -45,6 +45,16 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "200m"
+          readinessProbe:
+            grpc:
+              port: 8080
+            initialDelaySeconds: 25
+            periodSeconds: 20
+          livenessProbe:
+            grpc:
+              port: 8080
+            initialDelaySeconds: 25
+            periodSeconds: 20
 ---
 kind: Service
 apiVersion: v1
@@ -58,6 +68,7 @@ spec:
     app: recommendationservice
   ports:
     - protocol: TCP
+      name: grpc
       port: 8080
       targetPort: 8080
   type: {{ .Values.recommendationservice.servicetype }}
