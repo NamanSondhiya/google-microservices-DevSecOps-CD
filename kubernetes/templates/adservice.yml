@@ -7,7 +7,7 @@ metadata:
     app: adservice
 spec:
   strategy:
-        type: {{ .Values.strategy.type }}
+    type: {{ .Values.strategy.type }}
   replicas: {{ .Values.replicasCount }}
   selector:
     matchLabels:
@@ -68,7 +68,6 @@ spec:
     app: adservice
   ports:
     - name: grpc
-      protocol: TCP
       port: 9555
       targetPort: 9555
   type: {{ .Values.adservice.servicetype }}
