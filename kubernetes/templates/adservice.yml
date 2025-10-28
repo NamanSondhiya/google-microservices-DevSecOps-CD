@@ -46,13 +46,11 @@ spec:
           readinessProbe:
             grpc:
               port: 9555
-              service: adservice
             initialDelaySeconds: 25
             periodSeconds: 20
           livenessProbe:
             grpc:
               port: 9555
-              service: adservice
             initialDelaySeconds: 25
             periodSeconds: 20
 ---
@@ -68,6 +66,7 @@ spec:
     app: adservice
   ports:
     - name: grpc
+      protocol: TCP
       port: 9555
       targetPort: 9555
   type: {{ .Values.adservice.servicetype }}
