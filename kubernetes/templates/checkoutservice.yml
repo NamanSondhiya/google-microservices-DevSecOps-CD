@@ -57,6 +57,16 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "200m"
+          readinessProbe:
+            grpc:
+              port: 8080
+            initialDelaySeconds: 25
+            periodSeconds: 20
+          livenessProbe:
+            grpc:
+              port: 8080
+            initialDelaySeconds: 25
+            periodSeconds: 20
 ---
 kind: Service
 apiVersion: v1
@@ -69,7 +79,8 @@ spec:
   selector:
     app: checkoutservice
   ports:
-    - protocol: TCP
+    - name: grpc
+      protocol: TCP
       port: 8080
       targetPort: 8080
   type: {{ .Values.checkoutservice.servicetype }}
