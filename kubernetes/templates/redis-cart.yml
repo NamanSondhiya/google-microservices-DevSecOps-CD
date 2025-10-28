@@ -25,22 +25,32 @@ spec:
               runAsGroup: 1000
               fsGroup: 1000
             containers:
-                - name: redis-cart
-                  image: "redis:{{ .Values.redisCart.imagetag }}"
-                  env:
-                  - name: DISABLE_TRACING
-                    value: "true"
-                  - name: DISABLE_PROFILER
-                    value: "true"
-                  ports:
-                    - containerPort: 6379
+              - name: redis-cart
+                image: "redis:{{ .Values.redisCart.imagetag }}"
+                env:
+                - name: DISABLE_TRACING
+                  value: "true"
+                - name: DISABLE_PROFILER
+                  value: "true"
+                ports:
+                  - containerPort: 6379
             resources:
-                limits:
-                    memory: "256Mi"
-                    cpu: "150m"
-                requests:
-                    memory: "128Mi"
-                    cpu: "50m"
+              limits:
+                memory: "256Mi"
+                cpu: "150m"
+              requests:
+                memory: "128Mi"
+                cpu: "50m"
+            readinessProbe:
+              initialDelaySeconds: 15
+              periodSeconds: 20
+              grpc:
+                port: 6379
+            livenessProbe:
+              initialDelaySeconds: 15
+              periodSeconds: 20
+              grpc:
+                port: 6379
 ---
 kind: Service
 apiVersion: v1
@@ -51,9 +61,10 @@ metadata:
        app: redis-cart
 spec:
     ports:
-        - port: 6379
-          targetPort: 6379
-          protocol: TCP
+      - name: grpc
+        port: 6379
+        targetPort: 6379
+        protocol: TCP
     type: {{ .Values.redisCart.servicetype }}
     selector:
         app: redis-cart

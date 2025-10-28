@@ -8,7 +8,7 @@ metadata:
 spec:
   replicas: {{ .Values.shippingservice.replicasCount }}
   strategy:
-        type: {{ .Values.strategy.type }}
+    type: {{ .Values.strategy.type }}
   selector:
     matchLabels:
       app: shippingservice
