@@ -18,6 +18,12 @@ spec:
                 app: cartservice
         spec:
             serviceAccountName: cartservice-sa
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 1000
+              fsGroup: 1000
+            terminationGracePeriodSeconds: 5
             containers:
               - name: cartservice
                 image: docker.io/namanss/cartservice:{{ .Values.cartservice.imagetag }}
