@@ -43,6 +43,16 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "200m"
+          readinessProbe:
+            grpc:
+              port: 50051
+            initialDelaySeconds: 25
+            periodSeconds: 20
+          livenessProbe:
+            grpc:
+              port: 50051
+            initialDelaySeconds: 25
+            periodSeconds: 20
 ---
 kind: Service
 apiVersion: v1
@@ -56,6 +66,7 @@ spec:
     app: paymentservice
   ports:
     - protocol: TCP
+      name: grpc
       port: 50051
       targetPort: 50051
   type: {{ .Values.paymentservice.servicetype }}
