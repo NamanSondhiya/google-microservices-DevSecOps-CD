@@ -75,3 +75,6 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: emailservice-sa
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: emailservice

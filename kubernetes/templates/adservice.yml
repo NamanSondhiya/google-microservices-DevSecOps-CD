@@ -8,7 +8,7 @@ metadata:
 spec:
   strategy:
     type: {{ .Values.strategy.type }}
-  replicas: {{ .Values.replicasCount }}
+  replicas: {{ .Values.adservice.replicasCount }}
   selector:
     matchLabels:
       app: adservice
@@ -75,3 +75,6 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: adservice-sa
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: adservice

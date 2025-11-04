@@ -22,6 +22,10 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+      initContainers:
+        - name: wait-for-frontend
+          image: busybox
+          command: ['sh', '-c', 'until nslookup frontend-svc.{{ .Values.namespace }}.svc.cluster.local; do echo waiting for frontend; sleep 2; done;']
       containers:
         - name: loadgenerator
           image: namanss/loadgenerator:{{ .Values.loadgenerator.imagetag }}

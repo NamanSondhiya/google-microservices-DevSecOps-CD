@@ -24,6 +24,10 @@ spec:
           runAsGroup: 1000
           fsGroup: 1000
         terminationGracePeriodSeconds: 5
+        initContainers:
+          - name: wait-for-redis
+            image: busybox
+            command: ['sh', '-c', 'until nslookup redis-cart-svc.{{ .Values.namespace }}.svc.cluster.local; do echo waiting for redis-cart; sleep 2; done;']
         containers:
           - name: cartservice
             image: docker.io/namanss/cartservice:{{ .Values.cartservice.imagetag }}

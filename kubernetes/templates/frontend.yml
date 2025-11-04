@@ -7,7 +7,10 @@ metadata:
     app: frontend
 spec:
   strategy:
-        type: {{ .Values.strategy.type }}
+    type: {{ .Values.strategy.type }}
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   replicas: {{ .Values.frontend.replicasCount }}
   selector:
     matchLabels:
@@ -30,28 +33,28 @@ spec:
           ports:
             - containerPort: 8080
           env:
-          - name: PORT
-            value: "8080"
-          - name: ENV_PLATFORM
-            value: "aws"
-          - name: PRODUCT_CATALOG_SERVICE_ADDR
-            value: productcatalogservice-svc.{{ .Values.namespace }}.svc.cluster.local:3550
-          - name: CURRENCY_SERVICE_ADDR
-            value: currencyservice-svc.{{ .Values.namespace }}.svc.cluster.local:7000
-          - name: CART_SERVICE_ADDR
-            value: cartservice-svc.{{ .Values.namespace }}.svc.cluster.local:7070
-          - name: RECOMMENDATION_SERVICE_ADDR
-            value: recommendationservice-svc.{{ .Values.namespace }}.svc.cluster.local:8080
-          - name: SHIPPING_SERVICE_ADDR
-            value: shippingservice-svc.{{ .Values.namespace }}.svc.cluster.local:50051
-          - name: CHECKOUT_SERVICE_ADDR
-            value: checkoutservice-svc.{{ .Values.namespace }}.svc.cluster.local:8080
-          - name: AD_SERVICE_ADDR
-            value: adservice-svc.{{ .Values.namespace }}.svc.cluster.local:9555
-          - name: DISABLE_TRACING
-            value: "true"
-          - name: DISABLE_PROFILER
-            value: "true"
+            - name: PORT
+              value: "8080"
+            - name: ENV_PLATFORM
+              value: "aws"
+            - name: PRODUCT_CATALOG_SERVICE_ADDR
+              value: productcatalogservice-svc.{{ .Values.namespace }}.svc.cluster.local:3550
+            - name: CURRENCY_SERVICE_ADDR
+              value: currencyservice-svc.{{ .Values.namespace }}.svc.cluster.local:7000
+            - name: CART_SERVICE_ADDR
+              value: cartservice-svc.{{ .Values.namespace }}.svc.cluster.local:7070
+            - name: RECOMMENDATION_SERVICE_ADDR
+              value: recommendationservice-svc.{{ .Values.namespace }}.svc.cluster.local:8080
+            - name: SHIPPING_SERVICE_ADDR
+              value: shippingservice-svc.{{ .Values.namespace }}.svc.cluster.local:50051
+            - name: CHECKOUT_SERVICE_ADDR
+              value: checkoutservice-svc.{{ .Values.namespace }}.svc.cluster.local:8080
+            - name: AD_SERVICE_ADDR
+              value: adservice-svc.{{ .Values.namespace }}.svc.cluster.local:9555
+            - name: DISABLE_TRACING
+              value: "true"
+            - name: DISABLE_PROFILER
+              value: "true"
           resources:
             requests:
               memory: "100Mi"
@@ -59,6 +62,18 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "200m"
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 11
+            failureThreshold: 6
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 19
+            failureThreshold: 5
 ---
 kind: Service
 apiVersion: v1
@@ -81,3 +96,6 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: frontend-sa
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: frontend

@@ -34,13 +34,23 @@ spec:
                   value: "true"
                 ports:
                   - containerPort: 6379
-            resources:
-              limits:
-                memory: "256Mi"
-                cpu: "150m"
-              requests:
-                memory: "128Mi"
-                cpu: "50m"
+                resources:
+                  limits:
+                    memory: "256Mi"
+                    cpu: "150m"
+                  requests:
+                    memory: "128Mi"
+                    cpu: "50m"
+                readinessProbe:
+                  tcpSocket:
+                    port: 6379
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                livenessProbe:
+                  tcpSocket:
+                    port: 6379
+                  initialDelaySeconds: 15
+                  periodSeconds: 20
 ---
 kind: Service
 apiVersion: v1
