@@ -1,0 +1,80 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: paymentservice-deploy
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: paymentservice
+spec:
+  replicas: {{ .Values.paymentservice.replicasCount }}
+  strategy:
+        type: {{ .Values.strategy.type }}
+  selector:
+    matchLabels:
+      app: paymentservice
+  template:
+    metadata:
+      labels:
+        app: paymentservice
+    spec:
+      serviceAccountName: paymentservice-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      terminationGracePeriodSeconds: 5 
+      containers:
+        - name: paymentservice
+          image: namanss/paymentservice:{{ .Values.paymentservice.imagetag }}
+          ports:
+            - containerPort: 50051
+          env:
+            - name: PORT
+              value: "50051"
+            - name: DISABLE_TRACING
+              value: "true"
+            - name: DISABLE_PROFILER
+              value: "true"
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+          readinessProbe:
+            grpc:
+              port: 50051
+            initialDelaySeconds: 25
+            periodSeconds: 20
+          livenessProbe:
+            grpc:
+              port: 50051
+            initialDelaySeconds: 25
+            periodSeconds: 20
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: paymentservice-svc
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: paymentservice
+spec:
+  selector:
+    app: paymentservice
+  ports:
+    - protocol: TCP
+      name: grpc
+      port: 50051
+      targetPort: 50051
+  type: {{ .Values.paymentservice.servicetype }}
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: paymentservice-sa
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: paymentservice

@@ -1,0 +1,78 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: redis-cart-deploy
+    namespace: {{ .Values.namespace }}
+    labels:
+      app: redis-cart
+spec:
+    replicas: {{ .Values.redisCart.replicasCount }}
+    strategy:
+        type: {{ .Values.strategy.type }}
+    selector:
+        matchLabels:
+            app: redis-cart
+    template:
+        metadata:
+            labels:
+                app: redis-cart
+        spec:
+            serviceAccountName: rediscart-sa
+            terminationGracePeriodSeconds: 5
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 1000
+              fsGroup: 1000
+            containers:
+              - name: redis-cart
+                image: "redis:{{ .Values.redisCart.imagetag }}"
+                env:
+                - name: DISABLE_TRACING
+                  value: "true"
+                - name: DISABLE_PROFILER
+                  value: "true"
+                ports:
+                  - containerPort: 6379
+                resources:
+                  limits:
+                    memory: "256Mi"
+                    cpu: "150m"
+                  requests:
+                    memory: "128Mi"
+                    cpu: "50m"
+                readinessProbe:
+                  tcpSocket:
+                    port: 6379
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                livenessProbe:
+                  tcpSocket:
+                    port: 6379
+                  initialDelaySeconds: 15
+                  periodSeconds: 20
+---
+kind: Service
+apiVersion: v1
+metadata:
+    name: redis-cart-svc
+    namespace: {{ .Values.namespace }}
+    labels:
+       app: redis-cart
+spec:
+    ports:
+      - name: grpc
+        port: 6379
+        targetPort: 6379
+        protocol: TCP
+    type: {{ .Values.redisCart.servicetype }}
+    selector:
+        app: redis-cart
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+    name: rediscart-sa
+    namespace: {{ .Values.namespace }}
+    labels:
+      app: redis-cart
