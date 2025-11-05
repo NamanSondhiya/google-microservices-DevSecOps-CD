@@ -79,6 +79,7 @@ The application consists of 10 microservices (excluding loadgenerator) written i
 ### Prerequisites
 - AWS CLI configured
 - kubectl installed
+- eksctl installed
 - Helm installed
 - ArgoCD CLI (optional)
 
