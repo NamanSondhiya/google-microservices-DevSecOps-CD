@@ -1,0 +1,28 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: google-microservices-cd
+  title: Google Microservices CD Pipeline
+  description: GitOps continuous deployment pipeline for microservices to KIND cluster
+  annotations:
+    github.com/project-slug: NamanSondhiya/google-microservices-DevSecOps-CD
+    jenkins.io/job-full-name: 'google-microservices-cd'
+    backstage.io/kubernetes-id: google-microservices-cd
+    backstage.io/kubernetes-label-selector: 'app.kubernetes.io/managed-by=argocd'
+  tags:
+    - cd
+    - jenkins
+    - gitops
+    - argocd
+    - kind
+  links:
+    - url: https://github.com/NamanSondhiya/google-microservices-DevSecOps-CD
+      title: Source Code
+      icon: github
+spec:
+  type: service
+  lifecycle: production
+  owner: user:default/guest
+  system: microservices-platform
+  dependsOn:
+    - component:default/google-microservices-devsecops

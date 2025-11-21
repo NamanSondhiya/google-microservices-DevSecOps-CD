@@ -10,6 +10,7 @@ pipeline {
     agent any
 
     parameters {
+        choice(name: 'ENV', choices: ['dev','stage', 'prod'], description: 'Choose the env for the deploiyment')
         string(name: 'IMAGE_TAG_AD', defaultValue: '', description: 'adservice Docker image tag after CI build')
         string(name: 'IMAGE_TAG_CART', defaultValue: '', description: 'cartservice Docker image tag after CI build')
         string(name: 'IMAGE_TAG_CHECK', defaultValue: '', description: 'checkoutservice Docker image tag after CI build')
@@ -61,6 +62,7 @@ pipeline {
         stage('Update K8s Chart values.yaml') {
             steps {
                 script {
+                    def file = "environment/${params.ENV}/values.yml"
                     def images = [
                         frontend: params.IMAGE_TAG_FRONT,
                         adservice: params.IMAGE_TAG_AD,
@@ -77,12 +79,10 @@ pipeline {
 
                     images.each { svc, tag ->
                         if (tag?.trim()) {
-                            echo "Updating ${svc} imagetag to ${tag}"
-                            sh """
-                            yq e -i '.${svc}.imagetag = "${tag}"' kubernetes/values.yaml
-                            """
-                            sh "yq e '.${svc}' kubernetes/values.yaml"
-                        } else {
+                            echo "Updating ${svc} imagetag to ${tag} in ${file}"
+                            sh """yq e -i '.${svc}.imagetag = "${tag}"' ${file}"""
+                        } 
+                        else {
                             echo "Skipping ${svc} because tag is empty"
                         }
                     }
