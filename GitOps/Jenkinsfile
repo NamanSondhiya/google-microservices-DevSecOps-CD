@@ -62,7 +62,7 @@ pipeline {
         stage('Update K8s Chart values.yaml') {
             steps {
                 script {
-                    def file = "environment/${params.ENV}/values.yml"
+                    def file = "environment/${params.ENV}/values.yaml"
                     def images = [
                         frontend: params.IMAGE_TAG_FRONT,
                         adservice: params.IMAGE_TAG_AD,
