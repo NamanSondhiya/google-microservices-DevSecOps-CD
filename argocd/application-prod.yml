@@ -8,7 +8,7 @@ spec:
   sourceRepos:
     - '*'
   destinations:
-    - namespace: application #match the namespace in the main.yml
+    - namespace: prod #match the namespace in the main.yml
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: ''
@@ -17,19 +17,22 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: google-microservices-stack
+  name: microservices-prod
   namespace: argocd
 spec:
   project: online-app
   source:
     repoURL: https://github.com/NamanSondhiya/google-microservices-DevSecOps-CD.git
-    path: kubernetes/
     targetRevision: main
+    path: kubernetes/
+    helm:
+      valueFiles:
+        - environment/prod/values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: application
+    namespace: prod
   syncPolicy:
-    automated:
+    automate:
       prune: true
       selfHeal: true
     syncOptions:

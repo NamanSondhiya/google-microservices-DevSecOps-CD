@@ -1,4 +1,4 @@
-namespace: application
+namespace: dev
 strategy:
   type: RollingUpdate
 redisCart:
