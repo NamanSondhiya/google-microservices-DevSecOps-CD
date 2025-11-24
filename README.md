@@ -46,8 +46,11 @@ The application consists of 10 microservices (excluding loadgenerator) written i
 ## Key Components
 
 ### ArgoCD Configuration
-- `argocd/main.yml`: Application manifest for ArgoCD
-- `argocd/online-app.yml`: Project configuration with permissions
+- `argocd/application-dev.yml`: Development environment application manifest
+- `argocd/application-stage.yml`: Staging environment application manifest  
+- `argocd/application-prod.yml`: Production environment application manifest
+- `argocd/online-app.yml`: Project configuration with RBAC permissions
+- Environment-specific values: `environment/dev/values.yaml`, `environment/stage/values.yaml`, `environment/prod/values.yaml`
 
 ### Helm Chart
 - `kubernetes/`: Helm chart for deploying all microservices
@@ -102,14 +105,19 @@ The application consists of 10 microservices (excluding loadgenerator) written i
    helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
    ```
 
-4. **Deploy Application**:
+4. **Deploy Application via ArgoCD**:
    ```bash
-   helm install microservices ./kubernetes
+   # Apply ArgoCD application manifest
+   kubectl apply -f argocd/application-dev.yml
+   
+   # Verify deployment
+   kubectl get applications -n argocd
+   kubectl get pods -n dev
    ```
 
 5. **Access Application** (NodePort: 31328):
    ```bash
-   kubectl get svc frontend -n application
+   kubectl get svc frontend -n dev
    # Access via: http://<EC2-Public-IP>:31328
    ```
 
@@ -120,7 +128,16 @@ The application consists of 10 microservices (excluding loadgenerator) written i
    # Dashboards: Kubernetes (12740), Node Exporter (1860), Namespace (15758)
    ```
 
-7. **Cleanup EKS Cluster**:
+7. **Clean Application Deployment**:
+   ```bash
+   # Delete ArgoCD application (with finalizers for complete cleanup)
+   kubectl delete -f argocd/application-dev.yml
+   
+   # Or use ArgoCD CLI for cascade deletion
+   argocd app delete microservices-dev --cascade
+   ```
+
+8. **Cleanup EKS Cluster**:
    ```bash
    eksctl delete cluster --name microservices-cluster --region ap-south-1
    ```
@@ -143,7 +160,9 @@ docker-compose up
 ## Security Features
 
 - **DevSecOps Integration**: Comprehensive security scanning in CI pipelines with Snyk integration planned
-- **RBAC**: Kubernetes role-based access control with principle of least privilege
+- **RBAC**: Kubernetes role-based access control with principle of least privilege implemented in ArgoCD projects
+- **Resource Restrictions**: Limited ArgoCD permissions to specific resource kinds (Service, ConfigMap, Secret, Deployment, NetworkPolicy)
+- **Namespace Isolation**: Multi-environment setup with dedicated namespaces (dev, stage, prod)
 - **Network Policies**: Service mesh isolation and traffic encryption (planned with Istio)
 - **Secrets Management**: AWS Secrets Manager integration for secure credential handling
 - **Container Security**: Multi-stage Docker builds with minimal attack surface
@@ -192,7 +211,7 @@ For ~10GB project with monitoring stack, recommended instance types:
 | SSH | 22 | TCP | Your IP |
 | Jenkins | 8080 | TCP | Your IP |
 | SonarQube | 9000 | TCP | Your IP |
-| Frontend (NodePort) | 31328 | TCP | 0.0.0.0/0 |
+| Frontend (LoadBalancer) | 80 | TCP | 0.0.0.0/0 |
 | Grafana (LoadBalancer) | 80 | TCP | 0.0.0.0/0 |
 
 ### Screenshots (Planned)
@@ -200,7 +219,7 @@ For ~10GB project with monitoring stack, recommended instance types:
 - [ ] ArgoCD dashboard with application sync status
 - [ ] Grafana dashboards showing application metrics
 - [ ] Jenkins pipeline execution with build artifacts
-- [ ] Application frontend running on NodePort 31328
+- [ ] Application frontend running on LoadBalancer [prod]
 - [ ] Prometheus targets and alerting rules
 
 This setup demonstrates production-ready DevSecOps practices for microservices deployment on AWS, showcasing expertise in cloud-native technologies and GitOps methodologies.
