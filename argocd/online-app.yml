@@ -1,0 +1,21 @@
+kind: AppProject
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: online-app
+  namespace: argocd
+spec:
+  description: Project space for Online Web-Store Application
+  sourceRepos:
+    - '*'
+  destinations:
+    - namespace: dev #match the namespace in the main.yml
+      server: https://kubernetes.default.svc
+    - namespace: prod #match the namespace in the main.yml
+      server: https://kubernetes.default.svc
+    - namespace: stage #match the namespace in the main.yml
+      server: https://kubernetes.default.svc
+    - namespace: application #match the namespace in the main.yml
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ''
+      kind: '*' #for principle of least privilage replace it with the application 'namespace'
