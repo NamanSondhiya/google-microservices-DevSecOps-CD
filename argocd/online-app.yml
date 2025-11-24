@@ -18,4 +18,4 @@ spec:
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: ''
-      kind: '*' #for principle of least privilage replace it with the application 'namespace'
+      kind: '*' #for principle of least privilage replace it with the application 'namespace, kind and groups, as wanted'
