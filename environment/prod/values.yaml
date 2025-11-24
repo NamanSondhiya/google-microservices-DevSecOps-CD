@@ -47,7 +47,7 @@ frontend:
   imagetag: "10.3"
   servicePort: 8080
   NodePort: 31328
-  servicetype: NodePort
+  servicetype: LoadBalancer
 loadgenerator:
   replicasCount: 1
   imagetag: 5
