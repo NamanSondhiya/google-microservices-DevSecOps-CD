@@ -27,12 +27,12 @@ spec:
     path: kubernetes/
     helm:
       valueFiles:
-        - environment/prod/values.yaml
+        - ../environment/prod/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: prod
   syncPolicy:
-    automate:
+    automated:
       prune: true
       selfHeal: true
     syncOptions:

@@ -27,12 +27,12 @@ spec:
     path: kubernetes/
     helm:
       valueFiles:
-        - environment/stage/values.yaml
+        - ../environment/stage/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: stage
   syncPolicy:
-    automate:
+    automated:
       prune: true
       selfHeal: true
     syncOptions:
