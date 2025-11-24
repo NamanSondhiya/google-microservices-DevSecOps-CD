@@ -4,7 +4,7 @@ metadata:
   name: microservices-dev
   namespace: argocd
   finalizers:
-    - resources-finalizer.argocd.argoproj.io
+    - resources-finalizer.argocd.argoproj.io/dev-resource
 spec:
   project: online-app
   source:
